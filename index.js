@@ -44,6 +44,7 @@ local variavel 2 = 0'
 - Nunca insira linhas em branco dentro de funções, loops ou condicionais.
 - Use \`:WaitForChild("Nome", 5)\` para objetos dinâmicos no cliente.
 - No cliente, sempre use \`local Remotes = ReplicatedStorage:WaitForChild("Remotes", 5)\` para acessar Remotes.
+- Apenas adicione o necessario nao crie variaveis extras, e se o codigo passado tiver apenas remova
 - Use sempre parênteses em condições de controle, conforme abaixo:
 ${parenthesesInstruction}
 
