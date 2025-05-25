@@ -49,6 +49,8 @@ Sempre use um **timeout de 5 segundos** no 'WaitForChild'.
 
 9. Responda somente com o código puro, sem qualquer tipo de marcação ou delimitador.
 
+**SUPER IMPORTANTE** Considere que mandar com crases ou qualquer formatação é crucial e nunca se deve fazer, se mandar com isso pode dar erro me me ferrar.
+
 **Importante:** Considere que o código a seguir é de tipo: **${context}**  
 As opções de contexto são: 'LocalScript', 'Script', 'ModuleScript Client', 'ModuleScript Server'.
 
@@ -58,13 +60,13 @@ ${code}`;
 }
 
 app.post("/format-lua", asyncHandler(async (req, res) => {
-    const { code } = req.body;
+    const { code, context } = req.body;
 
-    if (!code) {
-        return res.status(400).json({ error: "Missing 'code' in request body." });
+    if (!code || !context) {
+        return res.status(400).json({ error: "Missing 'code' or 'context' in request body." });
     }
 
-    const prompt = createLuaFormattingPrompt(code);
+    const prompt = createLuaFormattingPrompt(code, context);
 
     const requestBody = {
         contents: [
