@@ -20,26 +20,37 @@ const asyncHandler = fn => (req, res, next) => {
 };
 
 // Função que cria o prompt de formatação
-function createLuaFormattingPrompt(code) {
-    return `Formate este código Lua para Roblox Studio com foco em clareza, boas práticas e separação lógica. Siga rigorosamente as instruções abaixo:
+function createLuaFormattingPrompt(code, context) {
+    return `Formate este código Lua para Roblox Studio com foco em clareza, boas práticas e organização. Siga rigorosamente as instruções abaixo:
 
 1. Sempre use parênteses nas condições de estruturas de controle como if, while, etc. Exemplo: if (condicao) then.
 2. Aplique espaçamento consistente e indentação correta.
-3. Reorganize o código separando por seções na seguinte ordem e forma:
+3. Reorganize o código separando por seções nesta ordem:
 
 **Seções obrigatórias:**
 
-- Serviços: todas as chamadas a game:GetService devem estar agrupadas no topo, sem quebras entre elas.
+- Serviços: todas as chamadas a game:GetService agrupadas no topo, sem linhas em branco entre elas.
 - Módulos: requires ou dependências locais.
-- Variáveis de instância/configuração: ex: instâncias de classes, como 'local bob = ...'.
-- Conexões de eventos: agrupadas e sem espaçamento entre elas.
-- Funções declaradas: se houver.
-- Execução principal: ex: chamadas de inicialização, como 'bob:start()'.
+- Variáveis de instância/configuração.
+- Conexões de eventos.
+- Execução principal.
 
-4. Entre cada **seção**, adicione **uma única linha em branco** para delimitação visual.  
-5. Dentro de cada seção, **não** adicione linhas em branco entre comandos relacionados.  
-6. Nunca adicione comentários, explicações ou qualquer outra marcação.
-7. Responda apenas com o código puro, sem qualquer tipo de formatação, marcação ou delimitador (sem crases, aspas, blocos de código, etc).
+4. Se encontrar uso de 'ReplicatedStorage.Remotes', crie uma variável 'local Remotes = ReplicatedStorage:WaitForChild("Remotes", 5)' se for código de **cliente** (LocalScript).  
+Se for código de **server** (Script ou ModuleScript server), use 'local Remotes = ReplicatedStorage.Remotes'.
+
+5. Caso o código seja para o **cliente**, todo acesso a instâncias dinâmicas como 'ReplicatedStorage', 'Remotes', etc., deve ser feito usando 'WaitForChild("Nome", 5)'.  
+Sempre use um **timeout de 5 segundos** no 'WaitForChild'.
+
+6. Se o código for **server**, use acesso direto sem 'WaitForChild'.
+
+7. Nunca adicione comentários, explicações ou qualquer tipo de marcação.
+
+8. Nunca adicione espaçamentos extras entre linhas dentro de blocos relacionados, só entre as **seções** definidas.
+
+9. Responda somente com o código puro, sem qualquer tipo de marcação ou delimitador.
+
+**Importante:** Considere que o código a seguir é de tipo: **${context}**  
+As opções de contexto são: 'LocalScript', 'Script', 'ModuleScript Client', 'ModuleScript Server'.
 
 Aqui está o código para formatar:
 
