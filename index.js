@@ -15,7 +15,7 @@ app.post("/format-lua", async (req, res) => {
         return res.status(400).json({ error: "Missing 'code' in request body." });
     }
 
-    const prompt = `Formate este código Lua para Roblox Studio, aplicando indentação correta e boas práticas, mantendo a funcionalidade idêntica. Sempre coloque parênteses nas condições de if, while, etc., por exemplo: 'if (condicao) then'. Use espaçamento consistente e boa indentação. Envie apenas o código puro, sem explicações, sem marcações como crases (\`\`\`), e sem indicação de linguagem, APENAS TEXTO PURO:\n\n${code}`;
+    const prompt = `Formate este código Lua para Roblox Studio, aplicando indentação correta e boas práticas, mantendo a funcionalidade idêntica. Sempre coloque parênteses nas condições de if, while, etc., por exemplo: 'if (condicao) then'. Use espaçamento consistente e boa indentação. Envie apenas o código puro, sem explicações, sem marcações como crases (\`\`\`), e sem indicação de linguagem, APENAS TEXTO PURO SEM INDICAÇÃO DE LINGUAGEM E SEM CRASES:\n\n${code}`;
 
     const requestBody = {
         contents: [
