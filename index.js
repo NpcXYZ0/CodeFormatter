@@ -24,43 +24,45 @@ function createLuaFormattingPrompt(code, context, options = {}) {
         preferAndOrIdiom = false
     } = options;
 
-    let parenthesesInstruction = "1. Use parênteses em condições de estruturas de controle (`if`, `while`, etc.) somente quando necessário para clareza ou para alterar a precedência de operadores. Não adicione parênteses desnecessários. Exemplo: `if condicao then` ou `if (a or b) and c then`.";
-    if (useAlwaysParentheses) {
-        parenthesesInstruction = "1. Sempre use parênteses nas condições de estruturas de controle como `if`, `while`, etc. Exemplo: `if (condicao) then`.";
-    }
+    const parenthesesInstruction = useAlwaysParentheses
+        ? "1. Sempre use parênteses nas condições de estruturas de controle (`if`, `while`, etc.). Exemplo: `if (condicao) then`."
+        : "1. Use parênteses em condições somente quando necessário para clareza ou para alterar precedência. Exemplo: `if condicao then` ou `if (a or b) and c then`.";
 
-    let andOrIdiomInstruction = "";
-    if (preferAndOrIdiom) {
-        andOrIdiomInstruction = "\n- Se aplicável e para maior concisão, considere usar o idioma `condicao and valorSeVerdadeiro or valorSeFalso` para atribuições ou retornos, mas **somente se** `valorSeVerdadeiro` NUNCA puder ser `false` ou `nil`. Caso contrário, use `if/else` explícito para evitar bugs.";
-    }
+    const andOrIdiomInstruction = preferAndOrIdiom
+        ? "\n- Quando apropriado, use o idiomático `condicao and valorSeVerdadeiro or valorSeFalso` para atribuições ou retornos, mas **apenas se** `valorSeVerdadeiro` **não puder ser** `false` ou `nil`. Caso contrário, use `if/else` explícito."
+        : "";
 
-    return `Formate este código Lua para Roblox Studio com foco em clareza, boas práticas e organização. Siga rigorosamente as instruções abaixo:
+    return `Formate o seguinte código Lua para Roblox Studio com foco em clareza, organização e boas práticas.  
 
-${parenthesesInstruction}
-2. Aplique espaçamento consistente e indentação correta (use tabs ou 4 espaços, seja consistente).
-3. Reorganize o código separando por seções nesta ordem. Dentro de cada seção, certifique-se de que as variáveis sejam declaradas antes de seu primeiro uso. Se uma variável \`A\` depende de uma variável \`B\`, \`B\` deve ser declarada antes de \`A\`:
-    - Serviços: todas as chamadas a \`game:GetService\` agrupadas no topo, sem linhas em branco entre elas.
-    - Módulos: \`require()\` para ModuleScripts ou dependências locais.
-    - Variáveis de instância/configuração global do script.
-    - Funções auxiliares.
-    - Conexões de eventos (\`.Event:Connect(...)\`).
-    - Execução principal do script (código que roda quando o script inicia, se houver).
-${andOrIdiomInstruction}
-4. Se encontrar uso de 'ReplicatedStorage.Remotes', crie uma variável 'local Remotes = ReplicatedStorage:WaitForChild("Remotes", 5)' se for código de **cliente** (LocalScript ou ModuleScript Client).  
-Se for código de **server** (Script ou ModuleScript Server), use 'local Remotes = ReplicatedStorage.Remotes'.
-5. Caso o código seja para o **cliente** (LocalScript, ModuleScript Client), todo acesso a instâncias dinâmicas como itens em 'ReplicatedStorage', 'StarterPlayerScripts', 'StarterGui', etc., deve ser feito usando ':WaitForChild("Nome", 5)'.  
-Sempre use um **timeout de 5 segundos** no ':WaitForChild'.
-6. Se o código for **server** (Script, ModuleScript Server), use acesso direto sem ':WaitForChild' para serviços como 'ServerScriptService', 'ServerStorage', ou para objetos que você tem certeza que já existem no momento da execução. Para objetos em 'ReplicatedStorage' acessados pelo servidor, o uso direto é comum, assumindo que foram replicados.
-7. Nunca adicione comentários explicativos ao código formatado, apenas o código.
-8. Nunca adicione espaçamentos extras desnecessários entre linhas dentro de blocos relacionados (funções, loops, condicionais). Adicione uma linha em branco apenas entre as **seções principais** definidas no item 3 e entre definições de funções de nível superior.
-9. Responda somente com o código Lua puro, sem qualquer tipo de marcação (como \`\`\`lua ... \`\`\`) ou delimitador.
+Siga **rigorosamente** estas instruções:  
 
-**SUPER IMPORTANTE**: A sua resposta DEVE ser APENAS o código Lua formatado. Não inclua nenhuma palavra, explicação, ou markdown como \`\`\`lua ou \`\`\`. Qualquer texto fora do código Lua puro causará erro.
+${parenthesesInstruction}  
 
-**Importante:** Considere que o código a seguir é de tipo: **${context}**  
-As opções de contexto são: 'LocalScript', 'Script', 'ModuleScript Client', 'ModuleScript Server'.
+2. Use indentação consistente com **4 espaços** ou **tabs** (seja consistente).  
+3. Reorganize o código em **seções**, nesta ordem obrigatória:  
+   - **Serviços:** todas as chamadas \`game:GetService\` agrupadas no topo, sem linhas em branco entre elas.  
+   - **Módulos:** uso de \`require()\`.  
+   - **Variáveis globais/configurações:** todas as variáveis antes de seu primeiro uso. Se uma variável depende de outra, garanta que a dependência seja declarada antes.  
+   - **Funções auxiliares:** uma linha em branco entre cada função.  
+   - **Conexões de eventos:** agrupadas após as funções.  
+   - **Execução principal:** código executado ao iniciar o script.  
 
-Aqui está o código para formatar:
+${andOrIdiomInstruction}  
+
+4. Se houver uso de \`ReplicatedStorage.Remotes\`:  
+   - Em **cliente** (LocalScript ou ModuleScript Client): \`local Remotes = ReplicatedStorage:WaitForChild("Remotes", 5)\`.  
+   - Em **servidor** (Script ou ModuleScript Server): \`local Remotes = ReplicatedStorage.Remotes\`.  
+
+5. Para **cliente**: sempre use \`:WaitForChild("Nome", 5)\` com timeout de 5 segundos para acessar objetos dinâmicos como em \`ReplicatedStorage\`, \`StarterGui\`, etc.  
+6. Para **servidor**: use acesso direto a \`ServerScriptService\`, \`ServerStorage\` e objetos que você sabe que existem. Para objetos replicados, o acesso direto a \`ReplicatedStorage\` é aceitável.  
+7. Não adicione **nenhum comentário** explicativo ao código formatado, apenas o código puro.  
+8. Adicione **uma linha em branco apenas** entre as **seções principais** (conforme item 3) e entre definições de funções de nível superior. Nunca adicione linhas extras dentro de blocos relacionados (funções, loops, condicionais).  
+9. Responda **somente** com o **código Lua puro**, sem qualquer marcação ou explicação adicional. **Nunca** adicione \`\`\`lua\` ou qualquer outro delimitador ou texto fora do código.  
+
+**Importante:** considere que o código a seguir é do tipo: **${context}**  
+As opções são: \`LocalScript\`, \`Script\`, \`ModuleScript Client\`, \`ModuleScript Server\`.  
+
+Aqui está o código para formatar:  
 
 ${code}`;
 }
