@@ -21,7 +21,26 @@ const asyncHandler = fn => (req, res, next) => {
 
 // Função que cria o prompt de formatação
 function createLuaFormattingPrompt(code) {
-    return `Formate este código Lua para Roblox Studio aplicando indentação correta e boas práticas, mantendo a funcionalidade idêntica. Sempre use parênteses nas condições de estruturas de controle como if, while, etc., por exemplo: if (condicao) then. Utilize espaçamento consistente e boa indentação. Utilize de conceitos avançados para formatar e ir sempre pensando como iria ficar. Ajuste a ordem do codigo para que fique com logica tambem, ex: no meui do codigo tem um require, então coloca la encima como uma maneira de normalizar por seções mas sem comentarios. Responda apenas com o código puro, sem explicações, sem comentários, sem marcações de qualquer tipo (como crases, aspas, ou blocos de código). Envie somente o texto do código, sem qualquer formatação extra ou indicação de linguagem. Nunca utilize crases ou qualquer outro delimitador para marcar o código. Repetindo, nunca use nenhum marcador de codigo e nenhum outro delimitador de codigo, isso é crucial, nunca use nenhum delimitador, apenas me mande texto puro. Aqui está o código para formatar:\n\n${code}`;
+    return `Formate este código Lua para Roblox Studio aplicando indentação correta, boas práticas e separação lógica por seções comuns, mantendo a funcionalidade idêntica. Sempre siga as orientações abaixo:
+
+- Utilize parênteses em todas as condições de estruturas de controle como if, while, etc. Exemplo: if (condicao) then.
+- Aplique espaçamento consistente e boa indentação em todo o código.
+- Reorganize o código separando por seções na seguinte ordem lógica:
+    1. Serviços (ex: game:GetService)
+    2. Requires ou módulos locais
+    3. Variáveis ou configurações
+    4. Conexões de eventos (como Connects de eventos do Roblox)
+    5. Funções declaradas
+    6. Execução principal (ex: chamadas que inicializam ou executam código)
+
+- Ajuste a ordem do código para seguir essa estrutura de seções, mas sempre mantendo a lógica e funcionalidade originais.
+- Nunca adicione comentários, explicações ou qualquer outra marcação.
+- Responda apenas com o código puro, sem qualquer tipo de formatação, marcação, ou delimitador (sem crases, aspas, blocos de código, etc). Nunca coloque nenhum marcador, apenas o texto puro.
+- Lembre-se: envie somente o código puro e formatado, sem qualquer explicação.
+
+Aqui está o código para formatar:
+
+${code}`;
 }
 
 app.post("/format-lua", asyncHandler(async (req, res) => {
