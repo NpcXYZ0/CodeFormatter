@@ -32,47 +32,26 @@ function createLuaFormattingPrompt(code, context, options = {}) {
     ? "\n- Use a expressão idiomática `condicao and valorSeVerdadeiro or valorSeFalso` para atribuições/retornos somente quando `valorSeVerdadeiro` não puder ser `false` ou `nil`. Caso contrário, use `if/else` explícito."
     : "";
 
-  return `Formate o código Lua para Roblox Studio com foco em clareza, organização e boas práticas.
-
-Siga estritamente as regras abaixo:
-
+  return `Formate o código Lua para Roblox Studio focando em:
+- Sempre faça com que a ordem tenha logica e nao assim: 
+'local variavel1 = variavel2 + 1
+local variavel 2 = 0'
+- Indentação de 4 espaços, sem tabs.
+- Organização simples: serviços no topo, depois variáveis, depois código executável.
+- Uma linha em branco entre blocos lógicos (ex: entre variáveis e funções, entre funções, entre conexões e código).
+- Não adicione funções, variáveis ou código que não existam no código original.
+- Não adicione comentários.
+- Nunca insira linhas em branco dentro de funções, loops ou condicionais.
+- Use \`:WaitForChild("Nome", 5)\` para objetos dinâmicos no cliente.
+- No cliente, sempre use \`local Remotes = ReplicatedStorage:WaitForChild("Remotes", 5)\` para acessar Remotes.
+- Use sempre parênteses em condições de controle, conforme abaixo:
 ${parenthesesInstruction}
 
-2. Use indentação consistente de 4 espaços (nunca tabs).
-
-3. Organize o código em seções, na ordem e formato exato a seguir, separando-as por **exatamente uma linha em branco**:
-
-   a) **Serviços:** todas as chamadas \`game:GetService()\` no topo, agrupadas sem linhas em branco entre elas.
-
-   b) **Módulos:** todas as chamadas \`require()\`, agrupadas sem linhas em branco entre elas.
-
-   c) **Variáveis globais/configurações:** todas as variáveis declaradas antes do primeiro uso, na ordem de dependência, agrupadas sem linhas em branco entre elas.
-
-   d) **Funções auxiliares:** declare cada função com exatamente uma linha em branco entre elas, sem linhas extras dentro do corpo da função.
-
-   e) **Conexões de eventos:** agrupadas logo após as funções, separadas das funções por uma linha em branco, sem linhas em branco entre as conexões.
-
-   f) **Execução principal:** código executado diretamente, separado das conexões por uma linha em branco.
-
-4. Nunca insira linhas em branco dentro de blocos (funções, loops, condicionais).
-
-5. Para acessar \`ReplicatedStorage.Remotes\`:
-
-   - No **cliente** (LocalScript/ModuleScript Client): use \`local Remotes = ReplicatedStorage:WaitForChild("Remotes", 5)\`.
-
-   - No **servidor** (Script/ModuleScript Server): use \`local Remotes = ReplicatedStorage.Remotes\`.
-
-6. No **cliente**, sempre use \`:WaitForChild("Nome", 5)\` para objetos dinâmicos (ex: \`StarterGui\`, \`ReplicatedStorage\`).
-
-7. No **servidor**, acesse objetos estáticos diretamente (ex: \`ServerScriptService\`, \`ServerStorage\`).
-
-8. Não adicione comentários explicativos, apenas o código puro.
-
-9. Responda **somente** com o código Lua puro, sem delimitadores, sem texto extra.
+Responda **somente** com o código Lua formatado, sem texto adicional ou delimitadores.
 
 ${andOrIdiomInstruction}
 
-Este código é do tipo: **${context}**
+Tipo de código: **${context}**
 
 Código a formatar:
 
