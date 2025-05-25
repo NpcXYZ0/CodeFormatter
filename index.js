@@ -21,22 +21,25 @@ const asyncHandler = fn => (req, res, next) => {
 
 // Função que cria o prompt de formatação
 function createLuaFormattingPrompt(code) {
-    return `Formate este código Lua para Roblox Studio aplicando indentação correta, boas práticas e separação lógica por seções comuns, mantendo a funcionalidade idêntica. Siga rigorosamente as orientações:
+    return `Formate este código Lua para Roblox Studio com foco em clareza, boas práticas e separação lógica. Siga rigorosamente as instruções abaixo:
 
 1. Sempre use parênteses nas condições de estruturas de controle como if, while, etc. Exemplo: if (condicao) then.
-2. Aplique espaçamento consistente e boa indentação.
-3. Reorganize o código separando por seções na seguinte ordem lógica:
-    - Serviços (ex: game:GetService)
-    - Requires ou módulos locais
-    - Variáveis de configuração ou instância
-    - Conexões de eventos (como Connect)
-    - Funções declaradas (se houver)
-    - Execução principal (inicializações, chamadas principais)
+2. Aplique espaçamento consistente e indentação correta.
+3. Reorganize o código separando por seções na seguinte ordem e forma:
 
-4. Entre cada seção, adicione **uma linha em branco** para garantir visualização clara e organizada.
-5. Nunca adicione comentários, explicações ou qualquer outra marcação.
-6. Responda apenas com o código puro, sem qualquer tipo de formatação, marcação ou delimitador (sem crases, aspas, blocos de código, etc). Nunca coloque nenhum marcador, apenas o texto puro.
-7. Mantenha a lógica e a funcionalidade originais.
+**Seções obrigatórias:**
+
+- Serviços: todas as chamadas a game:GetService devem estar agrupadas no topo, sem quebras entre elas.
+- Módulos: requires ou dependências locais.
+- Variáveis de instância/configuração: ex: instâncias de classes, como 'local bob = ...'.
+- Conexões de eventos: agrupadas e sem espaçamento entre elas.
+- Funções declaradas: se houver.
+- Execução principal: ex: chamadas de inicialização, como 'bob:start()'.
+
+4. Entre cada **seção**, adicione **uma única linha em branco** para delimitação visual.  
+5. Dentro de cada seção, **não** adicione linhas em branco entre comandos relacionados.  
+6. Nunca adicione comentários, explicações ou qualquer outra marcação.
+7. Responda apenas com o código puro, sem qualquer tipo de formatação, marcação ou delimitador (sem crases, aspas, blocos de código, etc).
 
 Aqui está o código para formatar:
 
